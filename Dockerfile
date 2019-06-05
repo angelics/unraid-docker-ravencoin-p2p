@@ -19,7 +19,6 @@ RUN \
 	boost-program_options \
 	boost-thread \
 	boost-chrono \
-	miniupnpc \
 	libevent \
 	libzmq \
 	g++ \
@@ -31,14 +30,12 @@ RUN \
 	automake \
 	libtool \
 	build-base \
-	g++ \
 	pkgconf \
 	boost-dev \
 	openssl-dev \
 	libevent-dev \
 	zeromq-dev \
 	db-dev \
-	miniupnpc-dev \
 	binutils \
 	&& \
 	echo "download & install berkeley..." && \
@@ -67,7 +64,6 @@ RUN \
 	make -j4 && \
 	make install && \
 	strip --strip-unneeded /usr/local/bin/ravend && \
-	#strip --strip-unneeded /usr/local/bin/raven-qt && \
 	strip --strip-unneeded /usr/local/lib/libravenconsensus.a && \
 	strip --strip-unneeded /usr/local/bin/raven-cli && \
     echo "Remove unused packages..." && \
@@ -84,4 +80,4 @@ ENV	APP_NAME="RavencoinP2P"
 VOLUME ["/storage"]
 
 # Expose port
-EXPOSE 8767
+EXPOSE 8767 18770 8766 18766 
