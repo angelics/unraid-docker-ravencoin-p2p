@@ -40,9 +40,9 @@ RUN \
 	&& \
 	echo "download & install berkeley..." && \
 	wget ${BERKELEYDB_URL} && \
-	tar -xzf db-4.8.30.NC.tar.gz && \
+	tar -xzf ${BERKELEYDB_VERSION}.tar.gz && \
 	sed s/__atomic_compare_exchange/__atomic_compare_exchange_db/g -i ${BERKELEYDB_VERSION}/dbinc/atomic.h && \
-	cd db-4.8.30.NC/build_unix/ && \
+	cd ${BERKELEYDB_VERSION}/build_unix/ && \
 	mkdir -p ${BERKELEYDB_PREFIX} && \
 	../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BERKELEYDB_PREFIX && \
 	make -j4 && \
@@ -68,7 +68,7 @@ RUN \
 	strip --strip-unneeded /usr/local/bin/raven-cli && \
     echo "Remove unused packages..." && \
     del-pkg build-dependencies && \
-	rm -rf /tmp/* /tmp/.[!.]*
+	rm -rf /tmp/* /tmp/.[!.]* /opt/*
 	
 # Add files
 COPY rootfs/ /

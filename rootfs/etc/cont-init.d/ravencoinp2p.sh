@@ -8,13 +8,22 @@ log() {
 }
 
 # Make sure some directories are created.
-mkdir -p /storage
+mkdir -p /storage/.raven
+
+# Downloading bootstrap.
+if [ "${BOOTSTRAP:-0}" -eq 1 ]; then
+    log "downloading bootstrap..."
+	apk add --upgrade wget 2>&1 | sed "s/^/[cont-init.d] $(basename $0): /"
+	wget -q --show-progress --progress=bar:force:noscroll http://bootstrap.ravenland.org/blockchain.tar.gz 2>&1 | sed "s/^/[cont-init.d] $(basename $0): /"
+	tar -xzf blockchain.tar.gz -C /storage/.raven 2>&1 | sed "s/^/[cont-init.d] $(basename $0): /"
+	rm blockchain.tar.gz 2>&1 | sed "s/^/[cont-init.d] $(basename $0): /"
+fi
 
 # Generate machine id.
 log "generating machine-id..."
 cat /proc/sys/kernel/random/uuid | tr -d '-' > /etc/machine-id
 
 # Take ownership of the config directory content.
-find /storage -mindepth 1 -exec chown $USER_ID:$GROUP_ID {} \;
+find /storage/.raven -mindepth 1 -exec chown $USER_ID:$GROUP_ID {} \;
 
 # vim: set ft=sh :
