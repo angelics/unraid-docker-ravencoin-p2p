@@ -1,0 +1,83 @@
+# Build
+FROM angelics/unraid-docker-phusion-baseimage:phusion-0.11
+
+# Define download URLs.
+ARG RAVENCOIN_VERSION=2.2.2
+ARG RAVENCOIN_URL=https://github.com/RavenProject/Ravencoin/archive/v${RAVENCOIN_VERSION}.tar.gz
+ARG BERKELEYDB_URL=https://raw.githubusercontent.com/bitcoin/bitcoin/master/contrib/install_db4.sh
+
+# Define working directory.
+WORKDIR /tmp
+
+RUN \
+	add-pkg \
+		libzmq5 \
+		libevent-2.1-6 \
+		libevent-pthreads-2.1-6 \
+		libboost-chrono1.65.1 \
+		libboost-program-options1.65.1 \
+		libboost-filesystem1.65.1 \
+		libboost-program-options1.65.1 \
+		libboost-thread1.65.1 \
+		&& \
+	add-pkg --virtual build-dependencies \
+		wget \
+		ca-certificates \
+		patch \
+		g++ \
+		libtool \
+		make \
+		build-essential \
+		autotools-dev \
+		automake \
+		pkg-config \
+		libssl-dev \
+		libevent-dev \
+		bsdmainutils \
+		python3 \
+		libprotobuf-dev \
+		protobuf-compiler \
+		libzmq3-dev \
+		libboost-system-dev \
+		libboost-filesystem-dev \
+		libboost-chrono-dev \
+		libboost-program-options-dev \
+		libboost-test-dev \
+		libboost-thread-dev \
+		binutils \
+		&& \
+	echo "Download and compile berkeleydb..." && \
+	wget ${BERKELEYDB_URL} && \
+	chmod +x install_db4.sh && \
+	./install_db4.sh /opt && \
+	echo "Download and compile ravencoin..." && \
+	mkdir ravencoin && \
+	curl -sS -L ${RAVENCOIN_URL} | tar -xz --strip 1 -C ravencoin && \
+	cd ravencoin && \
+	./autogen.sh && \
+	./configure LDFLAGS="-L/opt/db4/lib/" CPPFLAGS="-I/opt/db4/include/" \
+				--enable-cxx \
+				--disable-shared \
+				--without-gui \
+				--disable-tests \
+				--disable-bench \
+				--enable-reduce-exports \
+				--with-pic CXXFLAGS="-fPIC -O2" \
+				&& \
+	make -j2 && \
+	make install && \
+	echo "Remove unused packages..." && \
+	del-pkg build-dependencies && \
+	rm -rf /tmp/* /tmp/.[!.]* /opt/*
+
+# Add files
+COPY rootfs/ /
+
+# Set environment variables.
+ENV	APP_NAME="RavencoinP2P"
+
+# Define mountable directories.
+VOLUME ["/storage"]
+
+# Expose port
+EXPOSE 8767 18770 8766 18766 
