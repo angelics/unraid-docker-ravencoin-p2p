@@ -1,43 +1,44 @@
 # Build
 FROM jlesage/baseimage:alpine-3.9
 
-# Define download URLs.
-ARG RAVENCOIN_VERSION=2.2.2
-ARG RAVENCOIN_URL=https://github.com/RavenProject/Ravencoin/archive/v${RAVENCOIN_VERSION}.tar.gz
-ARG BERKELEYDB_VERSION=db-4.8.30.NC
-ARG BERKELEYDB_URL=https://download.oracle.com/berkeley-db/${BERKELEYDB_VERSION}.tar.gz
-ARG BERKELEYDB_PREFIX=/opt/${BERKELEYDB_VERSION}
-
 # Define working directory.
 WORKDIR /tmp
 
 RUN \
 	echo "Adding ravend dependencies..." && \
 	add-pkg \
-	boost-system \
-	boost-filesystem \
-	boost-program_options \
-	boost-thread \
-	boost-chrono \
-	libevent \
-	libzmq \
-	g++ \
-	libgcc \
-	&& \
+		boost-system \
+		boost-filesystem \
+		boost-program_options \
+		boost-thread \
+		boost-chrono \
+		libevent \
+		libzmq \
+		g++ \
+		libgcc	
+
+# Define download URLs.
+ARG RAVENCOIN_VERSION=2.4.0
+ARG RAVENCOIN_URL=https://github.com/RavenProject/Ravencoin/archive/v${RAVENCOIN_VERSION}.tar.gz
+ARG BERKELEYDB_VERSION=db-4.8.30.NC
+ARG BERKELEYDB_URL=https://download.oracle.com/berkeley-db/${BERKELEYDB_VERSION}.tar.gz
+ARG BERKELEYDB_PREFIX=/opt/${BERKELEYDB_VERSION}
+
+RUN \
 	add-pkg --virtual build-dependencies \
-	curl \
-	autoconf \
-	automake \
-	libtool \
-	build-base \
-	pkgconf \
-	boost-dev \
-	openssl-dev \
-	libevent-dev \
-	zeromq-dev \
-	db-dev \
-	binutils \
-	&& \
+		curl \
+		autoconf \
+		automake \
+		libtool \
+		build-base \
+		pkgconf \
+		boost-dev \
+		openssl-dev \
+		libevent-dev \
+		zeromq-dev \
+		db-dev \
+		binutils \
+		&& \
 	echo "download & install berkeley..." && \
 	wget ${BERKELEYDB_URL} && \
 	tar -xzf ${BERKELEYDB_VERSION}.tar.gz && \
@@ -69,7 +70,7 @@ RUN \
     echo "Remove unused packages..." && \
     del-pkg build-dependencies && \
 	rm -rf /tmp/* /tmp/.[!.]* /opt/*
-	
+
 # Add files
 COPY rootfs/ /
 
