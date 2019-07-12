@@ -19,6 +19,9 @@ if [ "${BOOTSTRAP:-0}" -eq 1 ]; then
 	rm blockchain.tar.gz 2>&1 | sed "s/^/[cont-init.d] $(basename $0): /"
 fi
 
+# check conf
+grep -q "server=1" /storage/.raven/raven.conf || echo 'server=1' >> /storage/.raven/raven.conf
+
 # Generate machine id.
 log "generating machine-id..."
 cat /proc/sys/kernel/random/uuid | tr -d '-' > /etc/machine-id

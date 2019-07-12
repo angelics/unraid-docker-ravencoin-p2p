@@ -40,6 +40,8 @@ kill_rvn() {
     PID="$(getpid_rvn)"
     if [ "$PID" != "UNSET" ]; then
         log "Terminating ravend..."
+		raven-cli -datadir=/storage/.raven stop
+		sleep 8
         kill $PID
         wait $PID
     fi

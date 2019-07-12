@@ -18,6 +18,8 @@ docker run [-d] \
 
 ```
 docker exec ravencoinp2p tail -f /storage/.raven/debug.log
+docker exec ravencoinp2p sh /check_status.sh
+
 ```
 
 ### Environment Variables
