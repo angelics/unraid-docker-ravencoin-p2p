@@ -11,6 +11,7 @@ docker run [-d] \
     -e TZ=Asia/Singapore \
     -e USER_ID=99 \
     -e GROUP_ID=100 \
+    -e BOOTSTRAP=0 \
     -v <HOST_DIR>:<CONTAINER_DIR>[:PERMISSIONS]]... \
     -p 8767:8767/tcp \
     angelics/unraid-docker-ravencoin-p2p
@@ -38,3 +39,4 @@ of this parameter has the format `<VARIABLE_NAME>=<VALUE>`.
 |`KEEP_APP_RUNNING`| When set to `1`, the application will be automatically restarted if it crashes or if user quits it. | `0` |
 |`APP_NICENESS`| Priority at which the application should run.  A niceness value of -20 is the highest priority and 19 is the lowest priority.  By default, niceness is not set, meaning that the default niceness of 0 is used.  **NOTE**: A negative niceness (priority increase) requires additional permissions.  In this case, the container should be run with the docker option `--cap-add=SYS_NICE`. | (unset) |
 |`CLEAN_TMP_DIR`| When set to `1`, all files in the `/tmp` directory are delete during the container startup. | `1` |
+|`BOOTSTRAP`| When set to `1`, application will download the latest bootsrap file provided by ravenland.org | `0` |
