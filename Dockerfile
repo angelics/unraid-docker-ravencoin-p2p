@@ -18,7 +18,7 @@ RUN \
 		libgcc	
 
 # Define download URLs.
-ARG RAVENCOIN_VERSION=3.3.2.0
+ARG RAVENCOIN_VERSION=3.3.2
 ARG RAVENCOIN_URL=https://github.com/RavenProject/Ravencoin/archive/v${RAVENCOIN_VERSION}.tar.gz
 ARG BERKELEYDB_VERSION=db-4.8.30.NC
 ARG BERKELEYDB_URL=https://download.oracle.com/berkeley-db/${BERKELEYDB_VERSION}.tar.gz
