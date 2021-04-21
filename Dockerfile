@@ -1,5 +1,5 @@
 # Build
-FROM jlesage/baseimage:alpine-3.12
+FROM jlesage/baseimage:alpine-3.9
 
 # Define working directory.
 WORKDIR /tmp
@@ -18,8 +18,11 @@ RUN \
 		libgcc	
 
 # Define download URLs.
-ARG RAVENCOIN_VERSION=4.3.2.1
+ARG RAVENCOIN_VERSION=4.3.1
 ARG RAVENCOIN_URL=https://github.com/RavenProject/Ravencoin/archive/v${RAVENCOIN_VERSION}.tar.gz
+ARG BERKELEYDB_VERSION=db-4.8.30.NC
+ARG BERKELEYDB_URL=https://download.oracle.com/berkeley-db/${BERKELEYDB_VERSION}.tar.gz
+ARG BERKELEYDB_PREFIX=/opt/${BERKELEYDB_VERSION}
 
 RUN \
 	add-pkg --virtual build-dependencies \
@@ -36,6 +39,15 @@ RUN \
 		db-dev \
 		binutils \
 		&& \
+	echo "download & install berkeley..." && \
+	wget ${BERKELEYDB_URL} && \
+	tar -xzf ${BERKELEYDB_VERSION}.tar.gz && \
+	sed s/__atomic_compare_exchange/__atomic_compare_exchange_db/g -i ${BERKELEYDB_VERSION}/dbinc/atomic.h && \
+	cd ${BERKELEYDB_VERSION}/build_unix/ && \
+	mkdir -p ${BERKELEYDB_PREFIX} && \
+	../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BERKELEYDB_PREFIX && \
+	make -j4 && \
+	make install && \
 	echo "Make install RavencoinWallet..." && \
 	mkdir ravencoin && \
 	curl -sS -L ${RAVENCOIN_URL} | tar -xz --strip 1 -C ravencoin && \
@@ -47,7 +59,6 @@ RUN \
 				--disable-shared \
 				--without-gui \
 				--disable-tests \
-				--disable-wallet \
 				--disable-bench \
 				--with-pic CXXFLAGS="-fPIC -O2" \
 				&& \
