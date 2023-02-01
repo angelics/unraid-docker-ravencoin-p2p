@@ -1,3 +1,4 @@
+#!/bin/sh
 #!/usr/bin/with-contenv sh
 
 set -e # Exit immediately if a command exits with a non-zero status.
@@ -9,15 +10,6 @@ log() {
 
 # Make sure some directories are created.
 mkdir -p /storage/.raven
-
-# Downloading bootstrap.
-if [ "${BOOTSTRAP:-0}" -eq 1 ]; then
-    log "downloading bootstrap..."
-	add-pkg wget 2>&1 | sed "s/^/[cont-init.d] $(basename $0): /"
-	wget -q --show-progress --progress=bar:force:noscroll http://bootstrap.ravenland.org/blockchain.tar.gz 2>&1 | sed "s/^/[cont-init.d] $(basename $0): /"
-	tar -xzf blockchain.tar.gz -C /storage/.raven 2>&1 | sed "s/^/[cont-init.d] $(basename $0): /"
-	rm blockchain.tar.gz 2>&1 | sed "s/^/[cont-init.d] $(basename $0): /"
-fi
 
 # check conf
 grep -q "server=1" /storage/.raven/raven.conf || echo 'server=1' >> /storage/.raven/raven.conf

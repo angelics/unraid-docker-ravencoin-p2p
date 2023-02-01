@@ -1,5 +1,5 @@
 # Build
-FROM jlesage/baseimage:alpine-3.12
+FROM jlesage/baseimage:alpine-3.17-v3
 
 # Define working directory.
 WORKDIR /tmp
@@ -18,7 +18,7 @@ RUN \
 		libgcc	
 
 # Define download URLs.
-ARG RAVENCOIN_VERSION=4.3.2.1
+ARG RAVENCOIN_VERSION=4.6.1
 ARG RAVENCOIN_URL=https://github.com/RavenProject/Ravencoin/archive/v${RAVENCOIN_VERSION}.tar.gz
 
 RUN \
@@ -35,6 +35,7 @@ RUN \
 		zeromq-dev \
 		db-dev \
 		binutils \
+		miniupnpc \
 		&& \
 	echo "Make install RavencoinWallet..." && \
 	mkdir ravencoin && \
@@ -58,7 +59,7 @@ RUN \
 	strip --strip-unneeded /usr/local/bin/raven-cli && \
     echo "Remove unused packages..." && \
     del-pkg build-dependencies && \
-	rm -rf /tmp/* /tmp/.[!.]* /opt/*
+	rm -rf /tmp/* /tmp/.[!.]*
 
 # Add files
 COPY rootfs/ /
@@ -70,4 +71,4 @@ ENV	APP_NAME="RavencoinP2P"
 VOLUME ["/storage"]
 
 # Expose port
-EXPOSE 8767 18770 8766 18766 
+EXPOSE 8767 18770 8766 18766
